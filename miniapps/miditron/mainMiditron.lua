@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-04-02 16:25:34",modified="2024-04-28 21:12:23",revision=2785]]
+--[[pod_format="raw",created="2024-04-02 16:25:34",modified="2024-05-01 19:27:15",revision=3007]]
 -- ral's miditron
 -- lua-midi library written by Possseidon
 -- gui wrapper based on code from importpng by pancelor
@@ -18,7 +18,7 @@ local parameters = {
 
 function initMidi()
 	coro = nil
-	state = rnd()<0.85 and "drop .mid or .midi \nfile here!" or rnd{"drop the dang\nmidi file -w-", "drop midi file\npls? owo","drop .mid file or\ni'll steal your\nSOCKS","drop the file already\ni wanna go home"}
+	state = rnd()<0.85 and "drop .mid or .midi here!" or rnd{"drop the dang midi file!", "drop midi file pls? owo","drop .mid file or\ni'll steal your SOCKS","drop the file already\ni wanna go home"}
 end
 
 
@@ -40,7 +40,7 @@ on_event("drop_items", function(msg)
 	
 	local ext = path:ext()
 	if ext!="mid" and ext!="midi" then
-		state = ext and ("ERR: need .mid or \n.midi, got ."..ext) or ("ERR: need .mid or\n.midi, got folder")
+		state = ext and ("ERR: need .mid or .midi, \ngot ."..ext) or ("ERR: need .mid or .midi, \ngot folder")
 		return
 	end
 
@@ -79,11 +79,10 @@ function drawMidi()
 	end
 end
 
-local not_used_yet = true
 function midiGui()
 	rectfill(7,8,119,177,21) --backgrounds
 --	rectfill(8,80,240,100,0)
-	print("\014"..state.." \141",23,42,7)
+	print("\014"..state.."\141",15,42,7)
 	print("\148\131",10,78,7)--buttons up down
 	print("\139\145",100,78,7)--buttons left right
 	
@@ -94,7 +93,7 @@ function midiGui()
 	print("Note Decay      ["..parameters.decayRate.."]",10,106,gui_selection==2 and 28 or 7)
 	if (gui_selection==3) rectfill(7,117,119,130,19)
 	print("No BPM Change   ["..(parameters.ignoreTempoChange and "X" or " ").."]",10,120,gui_selection==3 and 28 or 7) --spr(parameters.ignoreTempoChange and 1 or 0, 120,32)
-	print("(may fix some issues)",10,132,15)
+	print("\014(may fix some issues)",10,132,15)
 	if (gui_selection==4) rectfill(7,141,119,154,19)
 	print("Staccato        ["..(parameters.stacatto and "X" or " ").."]",10,144,gui_selection==4 and 28 or 7) --spr(parameters.stacatto and 1 or 0, 120,60)
 	
@@ -102,19 +101,17 @@ function midiGui()
 	if (keyp("up"))   gui_selection = max(1,gui_selection-1) not_used_yet = false
 	
 	if keyp("left") then
-		not_used_yet = false
 		if (gui_selection==1) parameters.noteDepth = max(1, parameters.noteDepth \ 2)
 		if (gui_selection==2) parameters.decayRate = max(0, parameters.decayRate-0.05)
 		if (gui_selection==3) parameters.ignoreTempoChange = not parameters.ignoreTempoChange
 		if (gui_selection==4) parameters.stacatto = not parameters.stacatto
 	elseif keyp("right") then
-		not_used_yet = false
 		if (gui_selection==1) parameters.noteDepth = min(parameters.noteDepth * 2, 32)
 		if (gui_selection==2) parameters.decayRate = min(parameters.decayRate+0.05, 1)
 		if (gui_selection==3) parameters.ignoreTempoChange = not parameters.ignoreTempoChange
 		if (gui_selection==4) parameters.stacatto = not parameters.stacatto
 	end
 	
-	if (not_used_yet) then print("navigate parameters\nwith arrow keys",12,156,6)
-	else print("by raul",68,168,15) end
+	print("\014navigate parameters\n  with arrow keys",26,71,6)
+	print("\014by raul",85,170,15)
 end

@@ -1,9 +1,9 @@
---[[pod_format="raw",created="2024-04-08 15:21:14",modified="2024-04-28 21:12:23",revision=15661]]
---PICOPHONE 0.4.20
+--[[pod_format="raw",created="2024-04-08 15:21:14",modified="2024-05-01 19:27:15",revision=15870]]
+--PICOPHONE 0.4.27
 --Author: 369px
 include "inits.lua"
 
-appVersion = "0.4.15"
+appVersion = "0.4.27"
 if appToUpdate() then currentPage="installer" end 
 
 function _draw()
@@ -18,7 +18,7 @@ function _draw()
 	--usage info	   
 --	print(mx..","..my,50,9,15)
 --	print(debugz,6,178,7)
-	print("CPU:"..string.format("%.2f",stat(1)*100).."%",6,190,phoneColor==0 and 7 or 0)
+--	print("CPU:"..string.format("%.2f",stat(1)*100).."%",6,190,phoneColor==0 and 7 or 0)
 end
 
 function _update()

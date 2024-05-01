@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-23 02:18:36",modified="2024-04-28 21:12:23",revision=4672]]
+--[[pod_format="raw",created="2024-03-23 02:18:36",modified="2024-05-01 19:27:15",revision=4902]]
 --[[
 		PicoChat 1.2
 			By Hessery
@@ -114,7 +114,6 @@ function drawChat()
 			end
 		end
 	end
-	
 
 	-- Draw the gui
 	chatGui:draw_all()
@@ -124,6 +123,11 @@ function drawChat()
 	--print(s, 0, gui.y - (lines * 11))
 	--print(width, 0, 0)
 	
+	if buggedChat==true then
+		rectfill(20,70,100,115,17)
+		print("PicoChat is\nunavailable\nat the moment,\ntry later!",23,73,19)
+	end
+
 	if username=="Anon" then 
 		rectfill(10,21,114,35,28)
 		print("\014type:\34/NICK [YOUR-NAME]\34\nto choose a nickname!",14,23,19)
@@ -134,7 +138,7 @@ function drawChat()
 		
 end
 
-
+buggedChat=false
 -- Fetching functions
 function send(msg)
 	-- Change to GET if MSG is blank
@@ -146,8 +150,18 @@ function send(msg)
 		ret = fetch(adr)
 	end)
 	
-	while (costatus(c) != "dead") do
+	local count=0
+	local fixvar = costatus(c)
+	while (fixvar != "dead") do
 		coresume(c)
+		
+		count=count+1
+		
+		if count>100 then 
+			fixvar = "dead" 
+			buggedChat=true
+		end
+		
 	end
 	
 	if ret != nil then
@@ -162,6 +176,7 @@ function send(msg)
 			--displayLog = out
 		end
 	end
+
 	return c
 end
 

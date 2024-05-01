@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-04-09 13:56:30",modified="2024-04-28 21:12:23",revision=12121]]
+--[[pod_format="raw",created="2024-04-09 13:56:30",modified="2024-05-01 19:27:15",revision=12324]]
 lastMouseBtn=0
 function checkClick()	
 	mx,my,mbtn = mouse()

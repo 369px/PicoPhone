@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 07:46:31",modified="2024-04-28 21:12:23",revision=441]]
+--[[pod_format="raw",created="2024-03-29 07:46:31",modified="2024-05-01 19:27:15",revision=644]]
 function word_wrap(str, maxWidthPx, keepIndent)
   keepIndent = (keepIndent == nil or keepIndent == true) and true or false
   result = ""

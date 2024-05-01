@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-04-18 00:41:05",modified="2024-04-28 21:12:23",revision=5545]]
+--[[pod_format="raw",created="2024-04-18 00:41:05",modified="2024-05-01 19:27:15",revision=5748]]
 function drawOS()
 	if currentPage!="sleep" then --If phone is not in low usage mode 
 	

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-29 08:21:42",modified="2024-04-28 21:12:23",revision=675]]
+--[[pod_format="raw",created="2024-03-29 08:21:42",modified="2024-05-01 19:27:15",revision=878]]
 function decode(code)
 	-- Trim it
 	code = sub(code, 1, #code-1)

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-04-09 13:47:44",modified="2024-04-28 21:12:23",revision=13228]]
+--[[pod_format="raw",created="2024-04-09 13:47:44",modified="2024-05-01 19:27:15",revision=13437]]
 drawFunctions = {}
 function drawInstall()
 	print("Taco is installing\nyour Phone...\n"..
@@ -264,7 +264,7 @@ function drawFunctions.specialChars()
         --iChar+=1
     end
     
-	print("by 369px",78,167,22)
+	print("\014by 369px",81,170,22)
 end
 
 --draw palette of colors with IDs (thanks to @fletchmakes on Discord)
@@ -284,5 +284,5 @@ function drawFunctions.colors()
     end
     
    print("COLOR IDs:",15,24,0)
-   print("by fletchmakes",45,167,22)
+   print("\014by fletchmakes",60,170,22)
 end
