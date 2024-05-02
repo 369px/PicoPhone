@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-04-18 00:41:05",modified="2024-05-01 19:27:15",revision=5748]]
+--[[pod_format="raw",created="2024-04-18 00:41:05",modified="2024-05-02 13:09:08",revision=6466]]
 function drawOS()
 	if currentPage!="sleep" then --If phone is not in low usage mode 
 	
@@ -22,6 +22,13 @@ function drawOS()
    		elseif currentPage=="midi2pico" then drawMidi()
    		elseif currentPage=="calculator" then drawCalc()
    		elseif currentPage=="chat" then drawChat() 
+   		
+   		elseif currentPage=="cPanel" then 
+	    	cPanelGUI:draw_all()
+	      if firstTimeCPanel==true then
+	   			bootCPanel()--turn that on
+	   			firstTimeCPanel=false
+	    	end
    		
    		elseif currentPage=="settings" then 
 	    	settingsGUI:draw_all()

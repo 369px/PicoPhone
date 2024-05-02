@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-04-09 13:47:44",modified="2024-05-01 19:27:15",revision=13437]]
+--[[pod_format="raw",created="2024-04-09 13:47:44",modified="2024-05-02 13:09:08",revision=14145]]
 drawFunctions = {}
 function drawInstall()
 	print("Taco is installing\nyour Phone...\n"..
@@ -89,23 +89,23 @@ end
 function drawFunctions.tacoTalks()
 	print(showedMessage,7,7,0)--msg Taco
 	rectfill(92,2,110,22,6) --taco background
-	spr(2,94,4) --taco
+	spr(tacoFace,94,4) --taco
 	
 	drawFunctions.tacoEyes()
 end
 
 function drawFunctions.marketSlide(self,yAnim)
 
- 	rectfill(0,yAnim,self.width,8,28)
- 	rectfill(0,yAnim+8,self.width,16,17)
- 	rectfill(0,yAnim+16,self.width,self.height,19)
-
+ 	rectfill(0,yAnim,self.width,3,28)
+ 	rectfill(0,yAnim+3,self.width,13,17)
+ 	rectfill(0,yAnim+13,self.width,self.height,19)
+--[[
 	for i=-1,1 do
 		for j=-1,1 do
   			print("\^w\^t".."^MARKET^",16+i,4+j,28)
   		end
-  	end
-  	print("\^w\^t".."^MARKET^",16,4,19)
+  	end--]]
+  	print("\^w\^t".."^MARKET^",16,6,7)
 end
 
 function drawFunctions.tacoEyes()	

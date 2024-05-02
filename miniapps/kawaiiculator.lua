@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 18:34:47",modified="2024-04-24 20:18:25",revision=4450]]
+--[[pod_format="raw",created="2024-03-19 18:34:47",modified="2024-05-01 23:50:42",revision=4476]]
 function initCalc()
 	display = ""
 	instructions = {}
@@ -278,5 +278,5 @@ function drawCalc()
 		end
 	end
 	
-	print("by patonildo",60,167,15)
+	print("\014by patonildo",69,170,6)
 end

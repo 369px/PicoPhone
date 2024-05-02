@@ -1,9 +1,10 @@
---[[pod_format="raw",created="2024-04-09 13:44:42",modified="2024-05-01 19:27:15",revision=13722]]
+--[[pod_format="raw",created="2024-04-09 13:44:42",modified="2024-05-02 13:09:08",revision=14511]]
 include "graphics.lua"
 include "click.lua"
 include "miniapps/kawaiiculator.lua"
 include "miniapps/miditron/mainMiditron.lua"
-include  "miniapps/picochat/mainChat.lua"
+include "miniapps/cpanel/cpanel.lua"
+include "miniapps/picochat/mainChat.lua"
 include "miniapps/minimarket/minimarket.lua"
 include "updateApp.lua"
 include "utils/terminal.lua"
@@ -20,9 +21,11 @@ window{--window settings
 }
 
 function _init()
+	drawFunctions.phone()
+	drawFunctions.display()
 	introPicophone()	
 	
-	send()
+	send()--send for PicoChat
 	
 	initCalc()
 end
@@ -34,14 +37,17 @@ sameSettings = ""
 folder369exists="\n369 folder exists!"
 installedCorrectly="\n...Problem installing\nPicophone!"
 
---CUSTOMIZATION
+--Phone Specs
 phoneColor=0
-phoneDisplay = {x1=7,y1=7,x2=119,y2=177}
+phoneDisplay = {x1=7,y1=7,x2=119,y2=177} --width=112 // height=170
+
+tacoFace= --[[pod_type="gfx"]]unpod("b64:bHo0AGwAAACPAAAA8QBweHUAQyAQEAQfEQ8TAWAGABgADAAQPwYALSA-DABRTxEfE18KAGAPESo_Kh4KABAOCQAQDQgAMQ4XDgoAkE4XXg0BAC5XPhYAQTcfDjcfACE3HAgA8AR3ATcGDxYANzFHBgsglwZAlwYg")
 
 --CHECK LAST PAGE
 currentPage="sleep"
 lastPage="menu"
 closedPage="menu"
+
 powerState="OFF"
 
 firstTimeEver=true
@@ -86,7 +92,7 @@ function bootPhone()
 							click=function(self) self.clicked=true end,
 							release=function(self) self.clicked=false end
 	}
-	
+		
 end
 
 firstTimeMenu=true
@@ -146,20 +152,18 @@ function bootMenu()
 							release=function(self) self.clicked=false end
 	}
 	
-	local newProject = mainMenu:attach{ x = startMenuX, y = startMenuY+32+3,width=32,height=32,
+	local cPanel = mainMenu:attach{ x = startMenuX, y = startMenuY+32+3,width=32,height=32,
 							cursor="pointer",clicked=false,
 							draw=function(self)
 									if self.clicked==false then spr(15,0,0)
-									else spr(23,0,0) 
-										rectfill(1,10,30,20,19)
-										print("Save!",3,12,7)
-									end
+									else spr(23,0,0) end
 									
 								
 								
 							end,
 							tap=function(self)
-								run_terminal_command("load #new")
+								lastPage=currentPage currentPage="cPanel"
+								--run_terminal_command("load #new")
 							end,
 							click=function(self) 
 								self.clicked=true 
@@ -220,6 +224,7 @@ function bootMenu()
 							release=function(self) self.clicked=false end
 	}
 	
+	
 --MARKET SLIDE AT BOTTOM
 		
 	local marketSlide = menuGUI:attach{x=7,y=155,width=113,height=23,
@@ -229,7 +234,7 @@ function bootMenu()
 								if (self.clicked==true) then  
 									if self.y>15 then
 										self.y=self.y-20
-										self.height+=14
+										self.height+=20
 									else 
 										lastPage=currentPage currentPage="market"
 										self.y=155 self.height=23 self.clicked=false

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-04-02 16:25:34",modified="2024-05-01 19:27:15",revision=3007]]
+--[[pod_format="raw",created="2024-04-02 16:25:34",modified="2024-05-01 23:50:49",revision=3275]]
 -- ral's miditron
 -- lua-midi library written by Possseidon
 -- gui wrapper based on code from importpng by pancelor
@@ -112,6 +112,6 @@ function midiGui()
 		if (gui_selection==4) parameters.stacatto = not parameters.stacatto
 	end
 	
-	print("\014navigate parameters\n  with arrow keys",26,71,6)
-	print("\014by raul",85,170,15)
+	print("\014navigate parameters\n  with arrow keys",26,69,6)
+	print("\014by raul",81,170,15)
 end

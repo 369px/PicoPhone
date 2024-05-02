@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-04-11 20:07:11",modified="2024-05-01 19:27:15",revision=8365]]
+--[[pod_format="raw",created="2024-04-11 20:07:11",modified="2024-05-01 23:51:09",revision=8626]]
 function appToUpdate()	
 
 	if fstat(fullpath("/appdata/369/picophone.p64.png")) then --if app already exists in 369 folder

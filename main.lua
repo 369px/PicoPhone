@@ -1,9 +1,9 @@
---[[pod_format="raw",created="2024-04-08 15:21:14",modified="2024-05-01 19:27:15",revision=15870]]
---PICOPHONE 0.4.27
+--[[pod_format="raw",created="2024-04-08 15:21:14",modified="2024-05-02 13:09:08",revision=16596]]
+--PICOPHONE 0.4.34
 --Author: 369px
 include "inits.lua"
 
-appVersion = "0.4.27"
+appVersion = "0.4.34"
 if appToUpdate() then currentPage="installer" end 
 
 function _draw()
@@ -25,9 +25,10 @@ function _update()
 
 	if currentPage!="sleep" and currentPage!="installer"  then
 			gui:update_all()
-			if currentPage=="menu" then menuGUI:update_all() end
-			if currentPage=="settings" then settingsGUI:update_all() end
+			if currentPage=="menu" then menuGUI:update_all()end
+			if currentPage=="settings" then settingsGUI:update_all()end
 			if currentPage=="specialChar" then checkClick() end
+			if currentPage=="cPanel" then cPanelGUI:update_all()end
 			if currentPage=="calculator" then updateCalc() end
 			if currentPage=="chat" then updateChat() end
 			if currentPage=="market" then marketGUI:update_all() end

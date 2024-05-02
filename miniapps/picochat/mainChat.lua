@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-23 02:18:36",modified="2024-05-01 19:27:15",revision=4902]]
+--[[pod_format="raw",created="2024-03-23 02:18:36",modified="2024-05-02 13:09:08",revision=5526]]
 --[[
 		PicoChat 1.2
 			By Hessery
@@ -86,13 +86,13 @@ end
 
 function drawChat()
 	-- Experimental lazy log draw
-	--local i = #displayLog
+	local i = #displayLog
 
 	local h = 0
 	if stat(1) < 0.25 then 
 	--	cls()
-		--while stat(1) < 0.25 and i > #displayLog-7 and h<130 do
-		for i=#displayLog,#displayLog-9,-1 do
+		while stat(1) < 0.25 and i > 0 and h<130 do
+		--for i=#displayLog,#displayLog-9,-1 do
 		
 			if h<130 then
 				-- Word wrap single line
@@ -107,10 +107,10 @@ function drawChat()
 					end
 				end
 				-- Add height to h
-				h += n * 8
+				h += n * 9
 				-- Draw
 				print(s, 10, 165 - h,7)
-			--	i -= 1
+				i -= 1
 			end
 		end
 	end
@@ -150,19 +150,11 @@ function send(msg)
 		ret = fetch(adr)
 	end)
 	
-	local count=0
-	local fixvar = costatus(c)
-	while (fixvar != "dead") do
+	while (costatus(c) != "dead") do
 		coresume(c)
-		
-		count=count+1
-		
-		if count>100 then 
-			fixvar = "dead" 
-			buggedChat=true
-		end
-		
-	end
+	end	
+	
+	if (costatus(c) != "dead") then buggedChat=true end
 	
 	if ret != nil then
 		if ret != oldRet then
