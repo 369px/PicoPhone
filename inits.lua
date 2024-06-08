@@ -1,34 +1,37 @@
---[[pod_format="raw",created="2024-04-09 13:44:42",modified="2024-05-02 13:09:08",revision=14511]]
+--[[pod_format="raw",created="2024-04-09 13:44:42",modified="2024-06-08 22:43:07",revision=19726]]
 include "graphics.lua"
 include "click.lua"
+include "OS.lua"
+include "utils/drop.lua"
 include "miniapps/kawaiiculator.lua"
 include "miniapps/miditron/mainMiditron.lua"
 include "miniapps/cpanel/cpanel.lua"
 include "miniapps/picochat/mainChat.lua"
 include "miniapps/minimarket/minimarket.lua"
 include "updateApp.lua"
+include "utils/369gui.lua"
+include "utils/icon.lua"
 include "utils/terminal.lua"
 include "utils/utilityFunctions.lua"
-
-poke(0x4000,get(fetch"/system/fonts/lil.font")) -- print("SO BIG")
-poke(0x5600,get(fetch"/system/fonts/p8.font")) -- print("\014so small")
+include "utils/finfo.lua"
 
 window{--window settings
 	width=127,
 	height=205,
-	title="\130PicoPhone",
-	resizeable=false
+	title="PicoPhone\130",
+	resizeable=false,
+	workspace = "current"
 }
 
 function _init()
-	drawFunctions.phone()
-	drawFunctions.display()
-	introPicophone()	
-	
+	drawFunctions.splashScreen()
+		
 	send()--send for PicoChat
 	
-	initCalc()
+--	initCalc()    
 end
+
+phone_userdata = {} --define table where we save userdata
 
 --update debug
 picoExists="\nPhone doesn't exist!\nCreating phone..."
@@ -39,6 +42,8 @@ installedCorrectly="\n...Problem installing\nPicophone!"
 
 --Phone Specs
 phoneColor=0
+timeToSleep=0 --var that counts frames to sleep
+timeSleepNow=600 --timeOfSleeping (20 seconds)
 phoneDisplay = {x1=7,y1=7,x2=119,y2=177} --width=112 // height=170
 
 tacoFace= --[[pod_type="gfx"]]unpod("b64:bHo0AGwAAACPAAAA8QBweHUAQyAQEAQfEQ8TAWAGABgADAAQPwYALSA-DABRTxEfE18KAGAPESo_Kh4KABAOCQAQDQgAMQ4XDgoAkE4XXg0BAC5XPhYAQTcfDjcfACE3HAgA8AR3ATcGDxYANzFHBgsglwZAlwYg")
@@ -46,7 +51,7 @@ tacoFace= --[[pod_type="gfx"]]unpod("b64:bHo0AGwAAACPAAAA8QBweHUAQyAQEAQfEQ8TAWA
 --CHECK LAST PAGE
 currentPage="sleep"
 lastPage="menu"
-closedPage="menu"
+closedPage="menu"--var for sleep
 
 powerState="OFF"
 
@@ -54,7 +59,8 @@ firstTimeEver=true
 gui = create_gui()
 function bootPhone()
 
-	local display = gui:attach{x = 7, y = 7, width = 113, height = 171}
+	local display = gui:attach{x = 7, y = 7, width = 113, height = 171,
+					click=function(self) timeToSleep=0 end}
 	
 	local homeBtn = gui:attach{x=53,y=182,width=18,height=18,clicked=false,cursor="pointer",
 					draw=function(self) if self.clicked==true then circ(9,9,9,6) end end,
@@ -76,7 +82,7 @@ function bootPhone()
 								else drawFunctions.sleepBtn(self,8) end
 							end,
 							tap=function(self)
-								closedPage=currentPage currentPage="sleep" powerState="OFF"
+								closedPage=currentPage powerState="OFF" currentPage="sleep" 
 							end,
 							click=function(self) self.clicked = true end,
 							release=function(self) self.clicked=false end
@@ -88,7 +94,13 @@ function bootPhone()
 								if self.clicked==false then drawFunctions.backBtn(self,19)
 								else drawFunctions.backBtn(self,17) end
 							end,
-							tap=function(self) currentPage=lastPage  updateTacoMsg() end,
+							tap=function(self) 
+								if currentPage!="menu" then
+									currentPage=lastPage  updateTacoMsg() 
+								else
+									currentPage="settings"
+								end
+							end,
 							click=function(self) self.clicked=true end,
 							release=function(self) self.clicked=false end
 	}
@@ -112,8 +124,25 @@ function bootMenu()
 	local mainMenu = menuGUI:attach{x=7,y=41,width=113,height=113}
 	startMenuX = 5
 	startMenuY = 4
+	
+	local cPanel = mainMenu:attach{ x = startMenuX, y = startMenuY,width=32,height=32,
+							cursor="pointer",clicked=false,
+							draw=function(self)
+									if self.clicked==false then spr(15,0,0)
+									else spr(23,0,0) end
+							end,
+							tap=function(self)
+							loadUserdata()
+								lastPage=currentPage currentPage="cPanel"
+								
+							end,
+							click=function(self) 
+								self.clicked=true 
+							end,
+							release=function(self) self.clicked=false end
+	}
 		
-	local colorsApp = mainMenu:attach{ x = startMenuX, y = startMenuY,width=32,height=32,
+	local colorsApp = mainMenu:attach{ x = startMenuX+32+3, y = startMenuY,width=32,height=32,
 							cursor="pointer",clicked=false,
 							draw=function(self)
 									if self.clicked==false then spr(8,0,0)
@@ -126,7 +155,7 @@ function bootMenu()
 							release=function(self) self.clicked=false end
 	}
 	
-	local charsApp = mainMenu:attach{ x = startMenuX+32+3, y = startMenuY,width=32,height=32,
+	local charsApp = mainMenu:attach{ x = startMenuX+64+6, y = startMenuY,width=32,height=32,
 							clicked=false,cursor="pointer",
 							draw=function(self)
 									if self.clicked==false then spr(9,0,0)
@@ -139,7 +168,7 @@ function bootMenu()
 							release=function(self) self.clicked=false end
 	}
 	
-	local midiApp = mainMenu:attach{ x = startMenuX+64+6, y = startMenuY,width=32,height=32,
+	local midiApp = mainMenu:attach{ x = startMenuX, y = startMenuY+32+3,width=32,height=32,
 							clicked=false,cursor="pointer",
 							draw=function(self)
 									if self.clicked==false then spr(10,0,0)
@@ -151,27 +180,7 @@ function bootMenu()
 							click=function(self) self.clicked=true end,
 							release=function(self) self.clicked=false end
 	}
-	
-	local cPanel = mainMenu:attach{ x = startMenuX, y = startMenuY+32+3,width=32,height=32,
-							cursor="pointer",clicked=false,
-							draw=function(self)
-									if self.clicked==false then spr(15,0,0)
-									else spr(23,0,0) end
-									
-								
-								
-							end,
-							tap=function(self)
-								lastPage=currentPage currentPage="cPanel"
-								--run_terminal_command("load #new")
-							end,
-							click=function(self) 
-								self.clicked=true 
-							--	run_terminal_command("save")  --sometimes it doesn't have time to save!
-							end,
-							release=function(self) self.clicked=false end
-	}
-	
+		
 	local calculatorApp = mainMenu:attach{ x = startMenuX+32+3, y = startMenuY+32+3,width=32,height=32,
 							clicked=false,cursor="pointer",
 							draw=function(self)
@@ -197,7 +206,8 @@ function bootMenu()
 							click=function(self) self.clicked=true end,
 							release=function(self) self.clicked=false end
 	}
-	
+	--[[
+				--to change name of this miniapp slot
 		local settingsApp = mainMenu:attach{ x = startMenuX, y = startMenuY+64+6,width=32,height=32,
 							clicked=false,cursor="pointer",
 							draw=function(self)
@@ -205,7 +215,7 @@ function bootMenu()
 									else spr(20,0,0) end
 							end,
 							tap=function(self)
-								lastPage=currentPage currentPage="settings"
+								--lastPage=currentPage currentPage="settings"
 							end,
 							click=function(self) self.clicked=true end,
 							release=function(self) self.clicked=false end
@@ -223,7 +233,7 @@ function bootMenu()
 							click=function(self) self.clicked=true end,
 							release=function(self) self.clicked=false end
 	}
-	
+	--]]
 	
 --MARKET SLIDE AT BOTTOM
 		
@@ -231,9 +241,11 @@ function bootMenu()
 							cursor="pointer",clicked=false,yAnim=0,
 							draw=function(self) 
 								drawFunctions.marketSlide(self,self.yAnim) 
+							end,
+							update=function(self)
 								if (self.clicked==true) then  
 									if self.y>15 then
-										self.y=self.y-20
+										self.y-=20
 										self.height+=20
 									else 
 										lastPage=currentPage currentPage="market"
@@ -241,7 +253,6 @@ function bootMenu()
 									end
 								end
 							end,
-							
 							tap=function(self) self.clicked=true end
 							
 	}
@@ -249,9 +260,15 @@ function bootMenu()
 
 firstTimeSettings=true
 settingsGUI = create_gui()
+
 function bootSettings()
-	local scrollView = settingsGUI:attach{x = 7, y = 7, width = 113, height = 171}
-	local scrollable = scrollView:attach{x=0,y=25,width=113,height=171}
+	local title = settingsGUI:attach{x=7,y=19,width=113,height=17,
+						draw=function(self) 
+							g369.fillBG(self,19)
+							print("\014settings",41,6,7) 
+						end}
+	local scrollView = settingsGUI:attach{x = title.x, y = title.y+title.height, width = 113, height = 171}
+	local scrollable = scrollView:attach{x=0,y=3,width=113,height=171}
 	
 	local appVrs = scrollable:attach{x=0,y=0,width=113,height=15,
 			draw = function(self)  
@@ -261,7 +278,7 @@ function bootSettings()
 				line(0,14,119,14,17)
 			end}
 			
-	local phoneCol = scrollable:attach{x=0,y=15,width=113,height=15,
+	local phoneCol = scrollable:attach{x=0,y=appVrs.height,width=113,height=15,
 			draw=function(self)
 				print("Phone color:",4,4,0)
 				line(0,14,119,14,17)
@@ -280,7 +297,8 @@ function bootSettings()
 				else phoneColor=0 end
 			end}
 			
-	local reinstall = scrollable:attach{x=0,y=30,width=113,height=15,clicked=false,
+	local reinstall = scrollable:attach{x=0,y=phoneCol.y+phoneCol.height,
+											width=113,height=15,clicked=false,
 			draw=function(self)
 				if self.clicked==true then 
 					rectfill(0,0,self.width,self.height,19) 
@@ -416,3 +434,11 @@ menu[6]={label="Settings",x1=startMenuX+56,y1=startMenuY+50,x2=startMenuX+108,y2
 --tacoBtn={x1=99,y1=22,x2=117,y2=41}
 tacoTalk={"Hey, Picotroner!","My name is Taco","What r u \148 2?","A phone inside a...","I'm hungry...","Do you love me?","Love urself, ok?","This is fun","Picotron is easy!","Errors are good","Deleted terminal","BBS>Social Media","Stop touching me!","Are you happy?","You're a legend!","You == Zep","You can do it!","I'm proud of you","Great idea!\135","Picotron>>>>","The BBS needs u","You're a genius!","Is this a feature","Vote TACO","Check the cpu ;)","\130\130\130\130\130","\130>\137"}
 showedMessage=tacoTalk[1]
+
+function loadUserdata()
+	if fstat("/appdata/369/phone_userdata.pod") then --if the pod file exists
+		phone_userdata = fetch("/appdata/369/phone_userdata.pod") --fetch it inside phone_userdata
+	else phone_userdata = {} end
+end
+
+loadUserdata()

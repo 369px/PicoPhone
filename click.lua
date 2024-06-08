@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-04-09 13:56:30",modified="2024-05-02 13:09:08",revision=13032]]
+--[[pod_format="raw",created="2024-04-09 13:56:30",modified="2024-06-08 22:43:07",revision=16933]]
 lastMouseBtn=0
 function checkClick()	
 	mx,my,mbtn = mouse()
@@ -9,18 +9,6 @@ function checkClick()
 		else --if click when sleeping go back to last page, else check page
 			if currentPage=="specialChar" then specialCharEvents() end
 			if currentPage=="installer" then installerEvents() end
-		--[[
-			if currentPage=="menu" then menuPage() --if on menupage check where
-			elseif currentPage=="specialChar" then specialCharEvents() --if on special char check which one
-			elseif currentPage=="installer" then installerEvents()
-			end
-			
-			if mx<38 and my<19 and currentPage!="installer" and currentPage!="installComplete" and currentPage!="home"
-			then currentPage=lastPage updateTacoMsg() end --if clikc go back btn
-			
-			if mx>statusBar[3].x and my>statusBar[3].y and mx<statusBar[3].x2 and my<statusBar[3].y2 
-			then lastPage=currentPage currentPage="sleep" end --click zzZ btn
-			--]]
 		end
 		
 		--btn home
@@ -35,18 +23,28 @@ function checkClick()
 	lastMouseBtn=mbtn
 end
 
+function installCompleteEvents()
+	if keyp("r") then run_terminal_command("reboot") end
+end
+
 function installerEvents()
 	if my>116 and my<151 then
 		if mx>11 and mx<43 then --left btn
+			phone_userdata.position = "left"
 			installWidget("left")
 		elseif mx>48 and mx<79 then--center btn
+			phone_userdata.position = "center"
 			installWidget("center")
 		elseif mx>83 and mx<115 then--right btn
+			phone_userdata.position = "right"
 			installWidget("right")
 		end
 	elseif my>153 and my<171 then
+		phone_userdata.position = "desktop"
 		installWidget("desktop")
 	end
+	
+	store("/appdata/369/phone_userdata.pod",phone_userdata)
 end
 
 installedTooltray=false

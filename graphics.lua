@@ -1,53 +1,19 @@
---[[pod_format="raw",created="2024-04-09 13:47:44",modified="2024-05-02 13:09:08",revision=14145]]
+--[[pod_format="raw",created="2024-04-09 13:47:44",modified="2024-06-08 22:43:07",revision=19193]]
 drawFunctions = {}
-function drawInstall()
-	print("Taco is installing\nyour Phone...\n"..
-			"Have you got space\nin your tooltray?",14,63,1)
-	--rectfill(tacoBtn.x1,tacoBtn.y1,tacoBtn.x2,tacoBtn.y2,6) --taco background
-	tacoEatingPhone(47,20)	
 
-	--showUpdateMessage = folder369exists..picoExists..setExists..sameSettings
-
-	--print(showUpdateMessage,14,45,7)
-	--print("Where do you want\nto install Picophone?\n(in desktop2)",15,115,10)
-
-	rectfill(11,115,43,150,18)
-	print("Left",18,129,7)
-	rectfill(47,115,79,150,1)
-	print("Center",49,129,7)
-	rectfill(83,115,115,150,18)
-	print("Right",88,129,7)
-	rectfill(11,154,115,170,18)
-	print("Move it on desktop!",17,159,29)
+function drawFunctions.splashScreen()
+	drawFunctions.phone()
+	rectfill(7,7,phoneDisplay.x2, phoneDisplay.y2,32) --display for bootscreen
+	drawFunctions.introPicophone()	
 end
 
-local tacoAnim=0
-local ttaco=0
-function tacoEatingPhone(x,y)
-		if 	ttaco==10 then
-		tacoAnim=rnd(4) ttaco=0
-	end
-	ttaco=ttaco+1
-
-	spr(40+tacoAnim,x,y)
-end
-
-function introPicophone()
+function drawFunctions.introPicophone()
 	for i=-1,1 do
 		for j=-1,1 do
   			print("\014\^w\^t".."PICOPHONE",28+i,93+j,28)
   		end
   	end
   	print("\014\^w\^t".."PICOPHONE",28,93,19)
-end
-
-function installComplete()
-	store("/appdata/369/picophone.p64.png/utils/settings.txt",appVersion)
-	if installedTooltray==true then
-		print("Installation complete!\nReboot Picotron and\nenjoy your Picophone!",11,80,1)
-	else 
-		print("PicoPhone is on the \ndesktop! Move it \nwherever you want!",14,80,1)
-	end
 end
 
 function drawFunctions.sleep(displayeHeight)
@@ -62,28 +28,10 @@ function drawFunctions.market()
 
 	print("\^w\^t".."Tools",20,26,7)
 
---	rectfill(7,46,119,177,7)	--where scroll should be inside
-
---[[
-	local scrollable = el:attach({x=9,y=40,width=100,height=50,
-						draw=function() end})
-	scrollable:attach()
-	scrollable:attach_scrollbars{autohide=false}
---]]
 		for i=1,#bbsCarts.tools do
 		print(bbsCarts.tools[i].label.."\n"..bbsCarts.tools[i].description,
 				10,55+(i-1)*40,7)
 		end
-
---[[
-	print("OKPAL (palette editor)\n"..
-			"Use your own color\npalette in Picotron.",
-			10,55,7)
-			
-	rectfill(59,90,119,105,17)
-	line(7,105,119,105,28)
-	print("Load #okpal",63,94,19)
-	--]]
 end
 
 function drawFunctions.tacoTalks()
@@ -167,15 +115,16 @@ function drawFunctions.phone()
 end
 
 function drawFunctions.display(self) --display
- 	rectfill(7,7,phoneDisplay.x2, phoneDisplay.y2,drawFunctions.getBGColor())
- 	
- 	if currentPage=="sleep" then
-   	
-   end
+--[[	if currentPage=="menu" then
+		spr(63,7,7)
+	else--]]
+	 	rectfill(7,7,phoneDisplay.x2, phoneDisplay.y2,drawFunctions.getBGColor())
+--	end
 end
 
 function drawFunctions.getBGColor()
 	if currentPage=="sleep" or currentPage=="chat" then return 32
+--	elseif currentPage=="menu" then return 7
 	elseif currentPage=="calculator" then return 17
 	elseif currentPage=="market" then return 19
 	elseif currentPage=="installer" or currentPage=="installComplete" then return 29
@@ -192,7 +141,10 @@ function drawFunctions.backBtn(self,col)
 	rectfill(0,0,self.width - 1, self.height - 1,col)
 	if drawFunctions.toDrawBackBtn()	 then print("\014\22 back",2,3,7) end
 	
-	if currentPage=="menu"then print("\014\141fm\141",3,3,7) end
+	if currentPage=="menu"then 
+		--print("\014\141fm\141",3,3,7) 
+		spr(0,3,2) 
+	end
 end
 
 function drawFunctions.toDrawBackBtn()	

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-23 02:18:36",modified="2024-05-02 13:09:08",revision=5526]]
+--[[pod_format="raw",created="2024-03-23 02:18:36",modified="2024-05-07 14:20:49",revision=7363]]
 --[[
 		PicoChat 1.2
 			By Hessery
@@ -233,14 +233,19 @@ menuitem {
 }
 -- Create the msgbox
 chatGui = create_gui()
-msgbar = chatGui:attach_text_editor({
-	x = 7, 
-	y = 177-12, 
+
+msgbarGUI = chatGui:attach({x=7,y = 177-12,width = 109,height = 12})
+
+msgbar = msgbarGUI:attach_text_editor({
+	x = 0, 
+	y = 0, 
 	width = 109,
 --	width_rel = 1.0,
 	height = 12,
 --	height_rel = 1.0,
 	max_lines = 1,
+	bgcol=19,
+	fgcol=7,
 	key_callback = { 
 		enter = (function()
 			-- Check to see if a command
@@ -258,16 +263,20 @@ msgbar = chatGui:attach_text_editor({
 			end
 			msgbar:set_text("")
 			msgbar:set_keyboard_focus(false)
-		end),
-		click = function(self)
-			--set_keyboard_focus(true)
-			msgbar:set_keyboard_focus(true)
-		end
+		end)
 	}
 })
 
+chatGui.click=function(self) 
+	msgbar:set_keyboard_focus(false)
+end
+
+msgbarGUI.tap=function(self) 
+	msgbar:set_keyboard_focus(true)
+end
+
 --if msgbar.clicked==true and homeBtn.clicked==false and backBtn.clicked==false then
---msgbar:set_text{"/nick "}
+--msgbar:set_text("click here to text")
 --msgbar:set_keyboard_focus(true) --this alone takes 8% CPU
 --msgbar:click({mx=1000,my=2})
 --end

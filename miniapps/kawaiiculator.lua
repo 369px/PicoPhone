@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-19 18:34:47",modified="2024-05-01 23:50:42",revision=4476]]
+--[[pod_format="raw",created="2024-03-19 18:34:47",modified="2024-05-03 20:46:36",revision=5204]]
 function initCalc()
 	display = ""
 	instructions = {}

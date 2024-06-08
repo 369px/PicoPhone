@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-04-02 16:25:34",modified="2024-05-01 23:50:49",revision=3275]]
+--[[pod_format="raw",created="2024-04-02 16:25:34",modified="2024-06-06 16:38:17",revision=3848]]
 -- ral's miditron
 -- lua-midi library written by Possseidon
 -- gui wrapper based on code from importpng by pancelor
@@ -19,44 +19,12 @@ local parameters = {
 function initMidi()
 	coro = nil
 	state = rnd()<0.85 and "drop .mid or .midi here!" or rnd{"drop the dang midi file!", "drop midi file pls? owo","drop .mid file or\ni'll steal your SOCKS","drop the file already\ni wanna go home"}
+	
+	 itemDropped.check()
 end
 
 
 initMidi()
-
-
-on_event("drop_items", function(msg)
-	state = "importing..."
-	
-	if #msg.items==0 then
-		state = "ERR:\ngot no items"
-		return
-	end
-	local path = msg.items[1].fullpath
-	if not path then
-		state = "ERR: spaces in\nfilename(?)"
-		return
-	end
-	
-	local ext = path:ext()
-	if ext!="mid" and ext!="midi" then
-		state = ext and ("ERR: need .mid or .midi, \ngot ."..ext) or ("ERR: need .mid or .midi, \ngot folder")
-		return
-	end
-
-	local midi_file = fetch(path)
-	if not midi_file then return end
-	
-	local path_without_ext
-	if (ext=="mid")  path_without_ext = path:sub(1,-5)
-	if (ext=="midi") path_without_ext = path:sub(1,-6)
-	
-	output_sfx_name = "/ram/cart/sfx/"..path_without_ext:basename()..".sfx"
-	
-	state = "processing..."
-	coro = cocreate(convertToPicotron)
-	coresume(coro,midi_file,output_sfx_name,parameters)
-end)
 
 function updateMidi()
 	if coro and costatus(coro)=="suspended" then
