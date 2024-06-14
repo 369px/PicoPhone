@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-05-01 23:52:48",modified="2024-06-08 22:43:07",revision=6664]]
+--[[pod_format="raw",created="2024-05-01 23:52:48",modified="2024-06-13 23:33:01",revision=8591]]
 cPanelGUI = create_gui()
 cPanelGUI.firstTime=true
 cPanelGUI.disableAll=false
@@ -16,7 +16,7 @@ function bootCPanel()
 	local fastLoad = cPanelGUI:attach{x=7,y=title.y+title.height,width=113,height=65,
 						draw=function(self)
 							g369.fillBG(self,6)
-							print("FAST-LOADER",30,7,19)
+							print("FAST-LOADER",29,7,19)
 						--	line(24,19,89,19,19)
 							rectfill(0,self.height-3,self.width,self.height,19)
 						end	}
@@ -173,21 +173,7 @@ function bootCPanel()
 							--hover=function(self) self.col=8 end,
 							release=function(self) self.clicked=false end
 	}	
-	
-	cPanelGUI.click=function(self)
-				--		txtEditor:set_keyboard_focus(false)
-				--		txtEditor:set_text("")	
-						
-					if not cart1.clicked and not cart2.clicked and not cart3.clicked
-					then self.disableAll=true end
-				
-			--		if self.disableAll and cart1.rightClick then cart1.rightClick=false
-			--		else self.disableAll=true end
-						
-						
-						
-	end
-	
+		
 	local scrollView = cPanelGUI:attach{x = 7, y=fastLoad.y+fastLoad.height, width = 113, height = 171,
 							draw = function(self)
 								--rect(0,0,self.width-1,self.height-1,19)
@@ -210,10 +196,6 @@ function bootCPanel()
 					print("Start a new cart...",4,4,0)
 					line(3,self.height-1,self.width-4,self.height-1,17)
 				end
-				
-				
-				
-			--rect(0,0,self.width-1,self.height-1,19)
 			end,
 			update=function(self) 
 				if self.tapped==true then
@@ -274,6 +256,21 @@ function bootCPanel()
 	
 --	scrollable:attach_scrollbars{autohide=true}
 	
+	cPanelGUI.click=function(self)
+				--		txtEditor:set_keyboard_focus(false)
+				--		txtEditor:set_text("")	
+						
+			if not cart1.clicked and not cart2.clicked and not cart3.clicked
+			and not newCart.clicked
+			then self.disableAll=true end
+				
+			--		if self.disableAll and cart1.rightClick then cart1.rightClick=false
+			--		else self.disableAll=true end
+						
+						
+						
+	end
+
 end
 
 function drawSlot(el,userdataSlot)

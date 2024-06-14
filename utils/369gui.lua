@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-05-03 23:30:30",modified="2024-06-08 22:43:07",revision=3799]]
+--[[pod_format="raw",created="2024-05-03 23:30:30",modified="2024-06-13 23:29:36",revision=5646]]
 g369 = {}
 
 --Utils!
@@ -15,7 +15,7 @@ function g369.topLine(el,col) --makes a line at the top of an element
 end
 
 function g369.bottomLine(el,col) --makes a line at the bottom of an element
-	line(0,el.height-1,el.width-1,el.height-1,col)
+	line(2,el.height-1,el.width-3,el.height-1,col)
 end
 
 --"Vector" Icons!

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-06-11 03:41:20",modified="2024-06-13 23:29:36",revision=1133]]
+--[[pod_format="raw",created="2024-05-04 23:15:08",modified="2024-06-11 03:39:04",revision=2773]]
 --I know, you can just gui:draw_all(), and I didn't knew it when I started learning the PT gui
 --but believe it or not... all these crazy if statements help with the cpu usage! you're welcome to make it better!
 
@@ -8,7 +8,7 @@ function drawOS()
 		
 	--	if powerState=="OFF" then --if phone just woke up and is not installer page
     	--	powerState="ON" 
-    		if firstTimeEver==true and currentPage!="installer" then
+    		if firstTimeEver==true and currentPage!="installer" and currentPage!="installerComplete" then
     			bootPhone() --turn phone ON (we only need to initialize vars one time here)
     			firstTimeEver=false
     		end	
@@ -54,7 +54,8 @@ function drawOS()
 	   	 		bootMarketTool()
 	   	 		firstTimeToolMarket=false
 	   	 	end
-	   	 		   	
+	   	end
+	   	
    		
    		gui:draw_all()
 	else

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-03-23 02:18:36",modified="2024-05-07 14:20:49",revision=7363]]
+--[[pod_format="raw",created="2024-03-23 02:18:36",modified="2024-06-10 23:38:45",revision=7871]]
 --[[
 		PicoChat 1.2
 			By Hessery
@@ -150,11 +150,15 @@ function send(msg)
 		ret = fetch(adr)
 	end)
 	
+	buggyT=0
 	while (costatus(c) != "dead") do
 		coresume(c)
+		
+		buggyT+=1
+		if buggyT==150 then buggedChat=true return end
 	end	
 	
-	if (costatus(c) != "dead") then buggedChat=true end
+--	if (costatus(c) != "dead") then buggedChat=true end
 	
 	if ret != nil then
 		if ret != oldRet then

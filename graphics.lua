@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-04-09 13:47:44",modified="2024-06-08 22:43:07",revision=19193]]
+--[[pod_format="raw",created="2024-04-09 13:47:44",modified="2024-06-13 23:29:36",revision=21054]]
 drawFunctions = {}
 
 function drawFunctions.splashScreen()
@@ -123,12 +123,13 @@ function drawFunctions.display(self) --display
 end
 
 function drawFunctions.getBGColor()
-	if currentPage=="sleep" or currentPage=="chat" then return 32
+	if currentPage=="sleep" or currentPage=="chat" 
+	or currentPage=="update" then return 32
 --	elseif currentPage=="menu" then return 7
 	elseif currentPage=="calculator" then return 17
 	elseif currentPage=="market" then return 19
 	elseif currentPage=="installer" or currentPage=="installComplete" then return 29
-	else return 7 --main background color that picochat text gets
+	else return 7 --picochat text gets this color lol
 	end
 end
 
@@ -157,16 +158,6 @@ function drawFunctions.sleepBtn(self,col)
 	rectfill(0,0,self.width -1, self.height-1,col)
 	line(0,self.height-1,self.width-1,self.height-1,8)
 	print("zzZ",3,2,7)
-end
-
-
-function drawSettings()
-	print("This page is currently\nin development...\ncheck later",10,70,6)
-	
-	print("miniOS:",10,25,0)
-	print(appVersion,90,25,19)
-	line(7,37,119,37,17)
---	menu:attach_scrollbars()
 end
 
 charSelect = { txt="\146", id=146}

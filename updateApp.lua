@@ -1,5 +1,13 @@
---[[pod_format="raw",created="2024-04-11 20:07:11",modified="2024-06-08 22:43:07",revision=10592]]
+--[[pod_format="raw",created="2024-04-11 20:07:11",modified="2024-06-14 16:42:03",revision=13039]]
 updatePhone = {}
+
+function updatePhone.boot()
+	if updatePhone.checkUpdate() then currentPage="installer" --if running picophone is different than installed picophone, install it
+	elseif not updatePhone.isLatestVersion() then 
+--		phone_userdata.bbsCurrentVersion += 1
+		currentPage="update" --if there's an update online, ask user
+	end
+end
 
 --check if update is needed
 function updatePhone.checkUpdate()	
@@ -7,34 +15,76 @@ function updatePhone.checkUpdate()
 	if updatePhone.pathExists("/appdata/369/picophone.p64.png") then --if existing user
 
 		--if settings file exists (to see app version) (will change this soon)
-		if updatePhone.pathExists("/appdata/369/picophone.p64.png/utils/settings.txt") then 
+--		if updatePhone.pathExists("/appdata/369/picophone.p64.png/utils/settings.txt") then 
+			
+		local userVersion = fetch("/appdata/369/phone_userdata.pod")	--save userdata in local var
+			
+		if not fstat("/appdata/369/phone_userdata.pod") --if no userdata file
+		or not userVersion.miniOSversion --if obsolete version
+		or userVersion.miniOSversion != phone_userdata.miniOSversion 
+		then --or different version
+				return true --update
+			--else return false 
+			end 
 		
-			local userVersion = fetch("/appdata/369/picophone.p64.png/utils/settings.txt")	
-			if userVersion != appVersion then return true
-			else return false end --if not same version, update
-		
-		else return true end --if no settings file, update (new versions have it)
+--		else updateApp()  return true end --if no settings file, update (new versions have it)
 	
 	else --if app doesn't exist in right path, start installation
-		
-		updatePhone.removeOldVersions() --if they exist delete them
-		
+
 		if (not updatePhone.pathExists("/appdata/369/")) then --if 369 folder don't exist
 			mkdir("/appdata/369/") --create it
 		end
-	
-		return true --app doesn't exist, start installation
+		
+	--	updateApp()
+		return true --app doesn't exist, install widget
 	end
+	
+--	if updatePhone.checkUpdateOnline() then return true end
+end
+
+
+function updatePhone.loadUpdate() --check online if there's a new version in the bbs
+		updatePhone.backupUserCart()
+		run_terminal_command("load #phone")
+		
+		for i=1,39 do 
+			flip()
+			notify("\130:  Loading new Picophone update "..i.."/39")
+		end 
+		
+		phone_userdata.miniOSversion = fetch_metadata("/ram/bbs_cart.p64.png").version
+	
+		notify("\130:  Update loaded! Installing widget...")
+		
+		currentPage="installer"
+end
+
+updatePhone.lastVersion=""
+function updatePhone.isLatestVersion()
+	local newV = fetch("https://www.lexaloffle.com/bbs/cart_info.php?cid=phone-"..phone_userdata.bbsCurrentVersion+1)
+	local strToFind = "missing cart_id"
+	
+	updatePhone.lastVersion=getLastPhoneVersion()
+	
+	--if next version's page (fecthed in newV) contains strTofind 
+	--it means there is no new version! 
+	if not newV then return true --if no page is fecthed... return true cause we don't need to update
+	else 
+		return string.find(newV, strToFind) ~= nil 
+	end
+end
+
+function updatePhone.backupUserCart()
+	run_terminal_command("cp /ram/cart /ram/compost/user_cart.p64")
+end
+
+function updatePhone.restoreUserCart()
+	run_terminal_command("cp /ram/compost/user_cart.p64 /ram/cart")
+	run_terminal_command("load /ram/compost/user_cart.p64")
 end
 
 function updatePhone.pathExists(cartPath)
 	return fstat(fullpath(cartPath))
-end
-
-function updatePhone.removeOldVersions()
-	rm("/appdata/local/tools/picophone.p64.png") --remove 0.1 version if present
-	rm("/appdata/local/picophone.p64.png")
-	rm("/appdata/picophone.p64.png") --remove older 0.2 if present
 end
 
 --Installer page draw functions
@@ -74,12 +124,13 @@ function updatePhone.drawInstall()
 end
 
 function installComplete()
-	store("/appdata/369/picophone.p64.png/utils/settings.txt",appVersion)
+
 	if installedTooltray==true then
 		print("Installation complete!\nReboot Picotron to see\n"..
 				"PicoPhone in desktop2!\n\nHit 'R' to reboot now",
 				10,63,1)
 	else 
+		currentPage="menu"
 		print("PicoPhone is on the \ndesktop! Move it \nwherever you want!",14,80,1)
 	end
 end

@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-04-16 01:42:16",modified="2024-06-06 16:38:17",revision=186]]
+--[[pod_format="raw",created="2024-04-16 01:42:16",modified="2024-06-11 23:18:09",revision=259]]
 local function run_program_in_new_process(prog_name, argv)
 
 	local proc_id = create_process(
@@ -10,6 +10,8 @@ local function run_program_in_new_process(prog_name, argv)
 			window_attribs = {show_in_workspace = true}
 		}
 	)
+	
+printh(pwd())
 
 end
 
@@ -87,7 +89,7 @@ function run_terminal_command(cmd)
 	elseif (prog_name) then
 
 		run_program_in_new_process(prog_name, argv) -- could do filename expansion etc. for arguments
-
+		--return true
 	else
 		-- last: try lua
 
@@ -110,9 +112,10 @@ function run_terminal_command(cmd)
 				if (err) then
 					add_line("\feRUNTIME ERROR")
 					add_line(err)
-					
+		--			return false
 				end
 			until (costatus ~= "running")
+	--		return true
 		else
 
 			-- try to differenciate between syntax error /command not found

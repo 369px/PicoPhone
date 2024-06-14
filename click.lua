@@ -1,4 +1,4 @@
---[[pod_format="raw",created="2024-04-09 13:56:30",modified="2024-06-08 22:43:07",revision=16933]]
+--[[pod_format="raw",created="2024-04-09 13:56:30",modified="2024-06-14 16:42:03",revision=19092]]
 lastMouseBtn=0
 function checkClick()	
 	mx,my,mbtn = mouse()
@@ -31,26 +31,28 @@ function installerEvents()
 	if my>116 and my<151 then
 		if mx>11 and mx<43 then --left btn
 			phone_userdata.position = "left"
-			installWidget("left")
+			installWidget(phone_userdata.position)
 		elseif mx>48 and mx<79 then--center btn
 			phone_userdata.position = "center"
-			installWidget("center")
+			installWidget(phone_userdata.position)
 		elseif mx>83 and mx<115 then--right btn
 			phone_userdata.position = "right"
-			installWidget("right")
+			installWidget(phone_userdata.position)
 		end
 	elseif my>153 and my<171 then
 		phone_userdata.position = "desktop"
 		installWidget("desktop")
 	end
-	
+		
+	--	phone_userdata.bbsVersion = bbsCurrentVersion
+	cp("/ram/cart", "/appdata/369/picophone.p64.png")
 	store("/appdata/369/phone_userdata.pod",phone_userdata)
 end
 
 installedTooltray=false
 function installWidget(position)
 	
-	cp(pwd(), "/appdata/369/picophone.p64.png")
+	--cp("/ram/cart", "/appdata/369/picophone.p64.png")
 
 	if not fstat(fullpath("/appdata/system/startup.lua")) then
 		store("/appdata/system/startup.lua","",{})
@@ -80,9 +82,11 @@ function installWidget(position)
 		installedTooltray=false
 	end
 
-		newString = newString .. installTxt	
-		store("/appdata/system/startup.lua",newString)
-	
+	newString = newString .. installTxt	
+	store("/appdata/system/startup.lua",newString)
+		
+	updatePhone.restoreUserCart()
+		
 	currentPage="installComplete"
 end
 
@@ -119,10 +123,6 @@ function menuPage()
 --	then currentPage="Market" lastPage="menu" end
 end
 
-function animateMarket()
-
-end
-
 function openMiniApp(appID)
 	if appID==1 then currentPage="colors"
 	elseif appID==2 then currentPage="specialChar"
@@ -130,7 +130,6 @@ function openMiniApp(appID)
 	elseif appID==4 then currentPage="calculator"
 	elseif appID==6 then currentPage="settings" end
 end
-	--	run_terminal_command("load #milkyway")
 	
 function specialCharEvents()
 	for i=1,#getCharacter do
